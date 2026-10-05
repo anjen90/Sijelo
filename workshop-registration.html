@@ -1,349 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Workshop Registration</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 500px;
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-    }
-
-    /* EDIT THIS TEXT ANYTIME IN YOUR HTML EDITOR */
-    .workshop-title {
-      text-align: center;
-      margin: 0 0 10px;
-      font-size: 30px;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      margin: 15px 0 7px;
-      font-weight: 600;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #d6d9de;
-      border-radius: 9px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #555;
-    }
-
-    .fee {
-      margin: 22px 0;
-      padding: 16px;
-      border-radius: 10px;
-      background: #f7f7f7;
-      display: flex;
-      justify-content: space-between;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    button {
-      width: 100%;
-      border: 0;
-      border-radius: 9px;
-      padding: 15px;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #111;
-      color: #fff;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    #message {
-      margin-top: 18px;
-      padding: 12px;
-      border-radius: 8px;
-      display: none;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .success {
-      display: block !important;
-      background: #eaf8ee;
-      color: #176b35;
-    }
-
-    .error {
-      display: block !important;
-      background: #fff0f0;
-      color: #a32626;
-    }
-
-    .note {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 12px;
-      color: #777;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workshop Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef3ee;
+    --ink: #17302a;
+    --muted: #55695f;
+    --card: #ffffff;
+    --line: #cfdad2;
+    --accent: #1f6f5c;
+    --accent-dark: #164f42;
+    --error: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Karla", system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .wrap { width: 100%; max-width: 460px; }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 7vw, 2.6rem);
+    line-height: 1.05;
+    margin: 0 0 8px;
+  }
+  .sub { color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+  form {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .field { margin-bottom: 18px; }
+  label { display: block; font-weight: 700; margin-bottom: 6px; font-size: .95rem; }
+  label span { color: var(--error); }
+  input {
+    width: 100%;
+    font: inherit;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink);
+  }
+  input:focus { outline: 3px solid #1f6f5c40; border-color: var(--accent); }
+  input.invalid { border-color: var(--error); }
+  .err { color: var(--error); font-size: .85rem; margin-top: 5px; min-height: 1em; }
+  .fee {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px dashed var(--line);
+    padding-top: 16px; margin: 6px 0 18px;
+  }
+  .fee b { font-family: "Fraunces", Georgia, serif; font-size: 1.9rem; }
+  button {
+    width: 100%; font: inherit; font-weight: 700; font-size: 1.05rem;
+    padding: 14px; border: 0; border-radius: 8px;
+    background: var(--accent); color: #fff; cursor: pointer;
+  }
+  button:hover { background: var(--accent-dark); }
+  button:focus-visible { outline: 3px solid #1f6f5c70; outline-offset: 2px; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .note { text-align: center; color: var(--muted); font-size: .85rem; margin-top: 12px; }
+  .status { margin-top: 16px; padding: 14px; border-radius: 8px; display: none; line-height: 1.45; }
+  .status.ok { display: block; background: #e2f3ea; color: #14513d; }
+  .status.fail { display: block; background: #fbe7e5; color: var(--error); }
+</style>
 </head>
-
 <body>
+<main class="wrap">
+  <h1>Register for the workshop</h1>
+  <p class="sub">Fill in your details, then pay securely with UPI, card or net banking.</p>
 
-  <div class="container">
+  <form id="regForm" novalidate>
+    <div class="field">
+      <label for="name">Full name <span>*</span></label>
+      <input id="name" name="name" type="text" autocomplete="name" required>
+      <div class="err" id="nameErr"></div>
+    </div>
+    <div class="field">
+      <label for="email">Email <span>*</span></label>
+      <input id="email" name="email" type="email" autocomplete="email" required>
+      <div class="err" id="emailErr"></div>
+    </div>
+    <div class="field">
+      <label for="phone">WhatsApp number <span>*</span></label>
+      <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" placeholder="10-digit mobile number" required>
+      <div class="err" id="phoneErr"></div>
+    </div>
 
-    <!--
-      ======================================================
-      EDIT WORKSHOP NAME HERE
-      ======================================================
-      Just replace the words between <h1> and </h1>.
+    <div class="fee"><span>Registration fee</span><b>₹89</b></div>
+    <button type="submit" id="payBtn">Pay ₹89 and register</button>
+    <div class="note">Payments are processed by Razorpay.</div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </form>
+</main>
 
-      Example:
-      <h1 class="workshop-title">AI Filmmaking Workshop</h1>
-
-      You can change it anytime using any HTML editor.
-    -->
-    <h1 class="workshop-title">Workshop Registration</h1>
-
-    <div class="subtitle">Register now and pay securely online.</div>
-
-    <form id="registrationForm">
-
-      <label for="name">Full Name</label>
-      <input type="text" id="name" placeholder="Enter your full name" required>
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" placeholder="Enter your email" required>
-
-      <label for="phone">Phone Number</label>
-      <input
-        type="tel"
-        id="phone"
-        placeholder="Enter your phone number"
-        pattern="[0-9]{10}"
-        maxlength="10"
-        required
-      >
-
-      <div class="fee">
-        <span>Registration Fee</span>
-        <span>₹89</span>
-      </div>
-
-      <button type="submit" id="payButton">Pay ₹89 & Register</button>
-
-      <div id="message"></div>
-
-      <div class="note">Secure payment powered by Razorpay</div>
-    </form>
-  </div>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  /*
-    ======================================================
-    RAZORPAY SETTINGS
-    ======================================================
-  */
+  // ====== CONFIGURE THESE ======
+  const RAZORPAY_KEY_ID = rzp_test_TkBnG031CiHIBY; // Key ID only (never put the Key Secret here)
+  const AMOUNT_PAISE    = 8900;                        // ₹89 = 8900 paise
+  const WORKSHOP_NAME   = "Workshop Registration";
+  // Optional: your server endpoint that saves the registration after payment
+  // (it should verify the Razorpay signature). Leave "" to skip.
+  const SAVE_URL        = "";
+  // =============================
 
-  const RAZORPAY_KEY_ID = "rzp_test_TjZKFsdB3NPG98";
-  const REGISTRATION_FEE_PAISE = 8900;
+  const form = document.getElementById("regForm");
+  const btn = document.getElementById("payBtn");
+  const statusEl = document.getElementById("status");
 
-  const form = document.getElementById("registrationForm");
-  const payButton = document.getElementById("payButton");
-  const message = document.getElementById("message");
-
-  function showMessage(text, type) {
-    message.textContent = text;
-    message.className = type;
+  function setError(id, msg) {
+    document.getElementById(id + "Err").textContent = msg;
+    document.getElementById(id).classList.toggle("invalid", !!msg);
   }
 
-  form.addEventListener("submit", async function(event) {
-    event.preventDefault();
+  function validate() {
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const phone = form.phone.value.replace(/\D/g, "");
+    let ok = true;
+    setError("name", name.length < 2 ? "Enter your full name." : ""); if (name.length < 2) ok = false;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    setError("email", emailOk ? "" : "Enter a valid email address."); if (!emailOk) ok = false;
+    const phoneOk = /^[6-9]\d{9}$/.test(phone);
+    setError("phone", phoneOk ? "" : "Enter a valid 10-digit WhatsApp number."); if (!phoneOk) ok = false;
+    return ok ? { name, email, phone } : null;
+  }
 
-    const workshopName =
-      document.querySelector(".workshop-title").textContent.trim();
+  function show(type, msg) {
+    statusEl.className = "status " + type;
+    statusEl.textContent = msg;
+  }
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-
-    if (!name || !email || !phone) {
-      showMessage("Please fill in all required fields.", "error");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    statusEl.className = "status";
+    const data = validate();
+    if (!data) return;
+    if (typeof Razorpay === "undefined") {
+      show("fail", "Payment service could not load. Check your connection and try again.");
       return;
     }
 
-    payButton.disabled = true;
-    payButton.textContent = "Creating secure payment...";
-
-    try {
-      /*
-        Backend endpoint required:
-        POST /api/create-order
-      */
-      const orderResponse = await fetch("/api/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          amount: REGISTRATION_FEE_PAISE,
-          currency: "INR",
-          workshop_name: workshopName,
-          name: name,
-          email: email,
-          phone: phone
-        })
-      });
-
-      if (!orderResponse.ok) {
-        throw new Error("Unable to create payment order.");
-      }
-
-      const order = await orderResponse.json();
-
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: workshopName,
-        description: "Workshop Registration Fee",
-        order_id: order.order_id,
-
-        prefill: {
-          name: name,
-          email: email,
-          contact: phone
-        },
-
-        notes: {
-          workshop_name: workshopName
-        },
-
-        theme: {
-          color: "#111111"
-        },
-
-        handler: async function(response) {
-          payButton.textContent = "Verifying payment...";
-
+    btn.disabled = true;
+    const rzp = new Razorpay({
+      key: RAZORPAY_KEY_ID,
+      amount: AMOUNT_PAISE,
+      currency: "INR",
+      name: WORKSHOP_NAME,
+      description: "Registration fee",
+      prefill: { name: data.name, email: data.email, contact: "+91" + data.phone },
+      notes: { whatsapp: data.phone },
+      theme: { color: "#1f6f5c" },
+      handler: async function (resp) {
+        if (SAVE_URL) {
           try {
-            /*
-              Backend endpoint required:
-              POST /api/verify-payment
-            */
-            const verifyResponse = await fetch("/api/verify-payment", {
+            await fetch(SAVE_URL, {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-
-                registration: {
-                  workshop_name: workshopName,
-                  name: name,
-                  email: email,
-                  phone: phone
-                }
-              })
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...data, ...resp })
             });
-
-            const result = await verifyResponse.json();
-
-            if (!verifyResponse.ok || !result.success) {
-              throw new Error("Payment verification failed.");
-            }
-
-            showMessage(
-              "Registration successful! Payment ID: " +
-              response.razorpay_payment_id,
-              "success"
-            );
-
-            form.reset();
-
-          } catch (error) {
-            showMessage(
-              "Payment was received, but verification could not be completed. Please contact the workshop organizer.",
-              "error"
-            );
-          }
-
-          payButton.disabled = false;
-          payButton.textContent = "Pay ₹89 & Register";
-        },
-
-        modal: {
-          ondismiss: function() {
-            payButton.disabled = false;
-            payButton.textContent = "Pay ₹89 & Register";
-          }
+          } catch (err) { /* payment succeeded; saving failed */ }
         }
-      };
-
-      const razorpay = new Razorpay(options);
-
-      razorpay.on("payment.failed", function(response) {
-        const reason =
-          response.error && response.error.description
-            ? response.error.description
-            : "Payment failed.";
-
-        showMessage(reason, "error");
-
-        payButton.disabled = false;
-        payButton.textContent = "Pay ₹89 & Register";
-      });
-
-      razorpay.open();
-
-    } catch (error) {
-      console.error(error);
-
-      showMessage(
-        "Unable to start payment. Please try again.",
-        "error"
-      );
-
-      payButton.disabled = false;
-      payButton.textContent = "Pay ₹89 & Register";
-    }
+        form.reset();
+        btn.disabled = false;
+        show("ok", "You're registered, " + data.name + ". Payment ID: " + resp.razorpay_payment_id +
+          ". A confirmation will be sent to " + data.email + ".");
+      },
+      modal: { ondismiss: function () { btn.disabled = false; } }
+    });
+    rzp.on("payment.failed", function (r) {
+      btn.disabled = false;
+      show("fail", "Payment failed: " + (r.error && r.error.description ? r.error.description : "please try again."));
+    });
+    rzp.open();
   });
 </script>
-
 </body>
 </html>
