@@ -334,7 +334,7 @@
   menu.addEventListener("click", e => { if (e.target.tagName === "A") { menu.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
 
   // ===== Enquiry form -> Google Sheet =====
-  const ENQUIRY_URL = "https://script.google.com/macros/s/AKfycbz0ePaapo2M8wnhN9NrTWVzevJFIV0j2pfhG8iUwOZHrkLaUKrlw8ZIvd_os5Msex50Bg/exec";
+  const ENQUIRY_URL = "https://script.google.com/macros/s/AKfycbyHHuAxrAFfp_46GYVUPAJ9bqYwAUzubIayMmLJcOTJ2KMpWuaKrT1OzQD5Q-zsLR9_/exec";
   const enq = document.getElementById("enqForm"), enqBtn = document.getElementById("enqBtn"), enqStatus = document.getElementById("enqStatus");
   const thanks = document.getElementById("thanks");
   function eErr(id, msg) { document.getElementById(id + "Err").textContent = msg; document.getElementById(id).classList.toggle("invalid", !!msg); return !msg; }
