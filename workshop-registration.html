@@ -80,6 +80,10 @@
   .status { margin-top: 16px; padding: 14px; border-radius: 8px; display: none; line-height: 1.45; }
   .status.ok { display: block; background: #e2f3ea; color: #14513d; }
   .status.fail { display: block; background: #fbe7e5; color: var(--error); }
+  dialog.redirect { border: 0; border-radius: 16px; padding: 30px 26px; max-width: 420px; width: calc(100% - 32px); text-align: center; color: var(--ink); box-shadow: 0 24px 80px rgba(23,48,42,.35); }
+  dialog.redirect::backdrop { background: rgba(23,48,42,.6); }
+  dialog.redirect p { margin: 0 0 22px; line-height: 1.55; font-size: 1.02rem; }
+  dialog.redirect .count { color: var(--muted); font-size: .85rem; margin: 12px 0 0; }
 </style>
 </head>
 <body>
@@ -113,10 +117,17 @@
   </form>
 </main>
 
+
+<dialog class="redirect" id="redirectDlg" aria-labelledby="redirectMsg">
+  <p id="redirectMsg">You are being redirected to the Razorpay payment gateway to complete your payment. Once your payment is confirmed, we will complete your registration. Thank you!</p>
+  <button type="button" id="goPay">Continue to payment</button>
+  <p class="count" id="redirectCount"></p>
+</dialog>
+
 <script>
   // ====== CONFIGURE THESE ======
   const PAYMENT_URL = "https://rzp.io/rzp/0NkjkeG";             // Razorpay payment link
-  const SHEET_URL   = "https://script.google.com/macros/s/AKfycbxpnQobCgo2wQVe1riEM6I96Ss0NOpmqhog6HRgmnisCgL6xZaDwAHlnOBeGPhLg5JWXw/exec"; // Google Apps Script URL (see setup steps)
+  const SHEET_URL   = "https://script.google.com/macros/s/AKfycbxVkTDnT7mVGQqAH1s0n4xsHgLkPmge98Q1bQ_avFxSjPmp1czzO6fI6Rw3UA-nfuZb/exec"; // Google Apps Script URL (see setup steps)
   // =============================
 
   const form = document.getElementById("regForm");
@@ -143,6 +154,27 @@
 
   function show(type, msg) { statusEl.className = "status " + type; statusEl.textContent = msg; }
 
+  let redirected = false;
+  function goToPayment() {
+    if (redirected) return;
+    redirected = true;
+    window.location.href = PAYMENT_URL;
+  }
+  function showRedirectPopup() {
+    const dlg = document.getElementById("redirectDlg");
+    const count = document.getElementById("redirectCount");
+    let left = 6;
+    document.getElementById("goPay").onclick = goToPayment;
+    dlg.addEventListener("cancel", ev => ev.preventDefault()); // Esc key: keep popup until continue
+    dlg.showModal();
+    count.textContent = "Redirecting automatically in " + left + " seconds...";
+    const timer = setInterval(() => {
+      left--;
+      if (left <= 0) { clearInterval(timer); goToPayment(); }
+      else count.textContent = "Redirecting automatically in " + left + " seconds...";
+    }, 1000);
+  }
+
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     statusEl.className = "status";
@@ -168,7 +200,7 @@
       });
       clearTimeout(timer);
       btn.textContent = "Opening payment...";
-      window.location.href = PAYMENT_URL;
+      showRedirectPopup();
     } catch (err) {
       btn.disabled = false;
       btn.textContent = "Pay ₹89 and register";
